@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot IA</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Pantalla de autenticación -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1><i class="fas fa-robot"></i> ChatBot IA</h1>
+                <p>Asistente de Inteligencia Artificial</p>
+            </div>
+            
+            <!-- Formulario de Login -->
+            <div id="login-form" class="auth-form">
+                <h2>Iniciar Sesión</h2>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                    </div>
+                    <button type="submit" class="auth-btn">
+                        <span>Iniciar Sesión</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    ¿No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate aquí</a>
+                </p>
+            </div>
+            
+            <!-- Formulario de Registro -->
+            <div id="register-form" class="auth-form" style="display: none;">
+                <h2>Crear Cuenta</h2>
+                <form id="registerForm">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="registerEmail" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="registerPassword" placeholder="Contraseña (mín. 6 caracteres)" required minlength="6">
+                    </div>
+                    <button type="submit" class="auth-btn">
+                        <span>Crear Cuenta</span>
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    ¿Ya tienes cuenta? <a href="#" onclick="showLogin()">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicación principal del chat -->
+    <div id="chat-app" class="chat-app" style="display: none;">
+        <!-- Header -->
+        <header class="chat-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1><i class="fas fa-robot"></i> ChatBot IA</h1>
+                    <span class="status-indicator">
+                        <i class="fas fa-circle"></i> En línea
+                    </span>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" onclick="clearHistory()" title="Limpiar historial">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="header-btn" onclick="logout()" title="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Área de mensajes -->
+        <main class="chat-main">
+            <div id="messages-container" class="messages-container">
+                <div class="welcome-message">
+                    <div class="welcome-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2>¡Hola! Soy tu asistente de IA</h2>
+                    <p>Puedes preguntarme cualquier cosa. Estoy aquí para ayudarte.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Área de entrada de mensaje -->
+        <footer class="chat-footer">
+            <div class="input-container">
+                <div class="message-input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Escribe tu mensaje aquí..."
+                        rows="1"
+                        maxlength="5000"
+                    ></textarea>
+                    <button id="sendButton" class="send-button" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <span class="char-counter"><span id="charCount">0</span>/5000</span>
+                    <span class="tip">Presiona Enter para enviar, Shift+Enter para nueva línea</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Procesando...</p>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
