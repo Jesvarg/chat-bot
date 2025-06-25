@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
 from app.models import User, ChatMessage
 from app.schemas import ChatMessageSchema
-from app.utils import handle_validation_error, format_error_response, format_success_response, get_gemini_response
+from app.utils import format_error_response, format_success_response, get_gemini_response
 from marshmallow import ValidationError
 from sqlalchemy import desc
 
@@ -11,16 +11,23 @@ chat_bp = Blueprint('chat', __name__)
 
 @chat_bp.route('/send', methods=['POST'])
 @jwt_required()
-@handle_validation_error
 def send_message():
     """Enviar mensaje al chatbot y obtener respuesta de Gemini"""
     current_user_id = get_jwt_identity()
     schema = ChatMessageSchema()
     
+    # Verificar que se recibió JSON
+    if not request.is_json:
+        return format_error_response('Content-Type debe ser application/json', 400)
+    
+    json_data = request.get_json()
+    if not json_data:
+        return format_error_response('No se recibieron datos JSON', 400)
+    
     try:
-        data = schema.load(request.get_json())
+        data = schema.load(json_data)
     except ValidationError as e:
-        return format_error_response('Datos de entrada inválidos', 400, e.messages)
+        return format_error_response('Datos de entrada inválidos', 422, e.messages)
     
     user_message = data['content'].strip()
     
