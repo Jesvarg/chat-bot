@@ -16,6 +16,8 @@ const loadingOverlay = document.getElementById('loading-overlay');
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar loading mientras se valida
+    showLoading(true);
     initializeApp();
     setupEventListeners();
 });
@@ -24,140 +26,54 @@ function initializeApp() {
     if (authToken) {
         validateTokenAndShowChat();
     } else {
+        showLoading(false);
         showAuthContainer();
     }
 }
 
-function setupEventListeners() {
-    // Formularios de autenticación
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
-    document.getElementById('registerForm').addEventListener('submit', handleRegister);
-    
-    // Input de mensaje
-    messageInput.addEventListener('input', handleMessageInput);
-    messageInput.addEventListener('keydown', handleKeyDown);
-    
-    // Auto-resize del textarea
-    messageInput.addEventListener('input', autoResizeTextarea);
-}
-
-// Funciones de autenticación
-function showLogin() {
-    loginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-}
-
-function showRegister() {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-}
-
-function showAuthContainer() {
-    authContainer.style.display = 'flex';
-    chatApp.style.display = 'none';
-}
-
-function showChatApp() {
-    authContainer.style.display = 'none';
-    chatApp.style.display = 'flex';
-    loadChatHistory();
-}
-
-async function handleLogin(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    showLoading(true);
-    
-    try {
-        const response = await fetch('/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            authToken = data.data.access_token;
-            currentUser = data.data.user;
-            localStorage.setItem('authToken', authToken);
-            
-            showToast('Bienvenido de vuelta', 'success');
-            showChatApp();
-        } else {
-            showToast(data.error || 'Error al iniciar sesión', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showToast('Error de conexión', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
-
-async function handleRegister(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-    
-    showLoading(true);
-    
-    try {
-        const response = await fetch('/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            authToken = data.data.access_token;
-            currentUser = data.data.user;
-            localStorage.setItem('authToken', authToken);
-            
-            showToast('¡Hola! Bienvenido', 'success');
-            showChatApp();
-        } else {
-            showToast(data.error || 'Error al crear cuenta', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showToast('Error de conexión', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
-
 async function validateTokenAndShowChat() {
+    // Verificar que el token existe
+    if (!authToken || authToken.length < 10) {
+        showLoading(false);
+        silentLogout();
+        return;
+    }
+    
     try {
         const response = await fetch('/auth/me', {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
             }
         });
         
         if (response.ok) {
             const data = await response.json();
             currentUser = data.data;
+            showLoading(false);
             showChatApp();
         } else {
-            logout();
+            // Error de validación - logout silencioso sin confirmación
+            showLoading(false);
+            silentLogout();
         }
     } catch (error) {
-        console.error('Error validating token:', error);
-        logout();
+        showLoading(false);
+        silentLogout();
     }
 }
 
+// Nueva función para logout silencioso (sin confirmación)
+function silentLogout() {
+    authToken = null;
+    currentUser = null;
+    localStorage.removeItem('authToken');
+    showAuthContainer();
+    clearMessages();
+}
+
+// Mantener la función logout original para cuando el usuario cierre sesión manualmente
 async function logout() {
     const confirmed = await showConfirmModal(
         '🚪 Cerrar Sesión',
@@ -228,7 +144,6 @@ async function sendMessage() {
             addMessage('assistant', 'Lo siento, ocurrió un error al procesar tu mensaje.');
         }
     } catch (error) {
-        console.error('Error:', error);
         hideTypingIndicator();
         showToast('Error de conexión', 'error');
         addMessage('assistant', 'Lo siento, no pude conectarme al servidor.');
@@ -301,10 +216,14 @@ function hideTypingIndicator() {
 }
 
 async function loadChatHistory() {
+    if (!authToken) return;
+    
     try {
-        const response = await fetch('/chat/history', {
+        const response = await fetch('/chat/history?per_page=50', {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
             }
         });
         
@@ -312,19 +231,23 @@ async function loadChatHistory() {
             const data = await response.json();
             const messages = data.data.messages;
             
-            // Limpiar contenedor
+            // Limpiar mensajes existentes
             clearMessages();
             
+            // Mostrar mensajes del historial
+            messages.forEach(msg => {
+                addMessage(msg.role, msg.content);
+            });
+            
+            // Si no hay mensajes, mostrar mensaje de bienvenida
             if (messages.length === 0) {
                 showWelcomeMessage();
-            } else {
-                messages.forEach(msg => {
-                    addMessageFromHistory(msg.role, msg.content, msg.timestamp);
-                });
             }
+        } else if (response.status === 401) {
+            silentLogout();
         }
     } catch (error) {
-        console.error('Error loading chat history:', error);
+        // Error silencioso al cargar historial
     }
 }
 
@@ -367,35 +290,31 @@ function clearMessages() {
 async function clearHistory() {
     const confirmed = await showConfirmModal(
         '🗑️ Limpiar Historial',
-        '¿Estás seguro de que quieres eliminar todo el historial de chat?',
-        'Limpiar',
-        'danger'
+        '¿Estás seguro de que quieres eliminar todo tu historial de chat? Esta acción no se puede deshacer.',
+        'Eliminar Todo',
+        'warning'
     );
     
     if (!confirmed) return;
-    
-    showLoading(true);
     
     try {
         const response = await fetch('/chat/clear', {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
             }
         });
         
         if (response.ok) {
             clearMessages();
             showWelcomeMessage();
-            showToast('Historial limpiado', 'success');
+            showToast('Historial eliminado', 'success');
         } else {
-            showToast('Error al limpiar historial', 'error');
+            showToast('Error al eliminar historial', 'error');
         }
     } catch (error) {
-        console.error('Error:', error);
         showToast('Error de conexión', 'error');
-    } finally {
-        showLoading(false);
     }
 }
 
@@ -611,3 +530,116 @@ document.addEventListener('DOMContentLoaded', function() {
         sendButton.disabled = true;
     }
 });
+
+// Funciones de navegación entre pantallas
+function showAuthContainer() {
+    authContainer.style.display = 'flex';
+    chatApp.style.display = 'none';
+}
+
+function showChatApp() {
+    authContainer.style.display = 'none';
+    chatApp.style.display = 'flex';
+    loadChatHistory();
+}
+
+// Funciones de autenticación
+function showLogin() {
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+}
+
+function showRegister() {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+}
+
+// Configurar event listeners
+function setupEventListeners() {
+    // Event listeners para formularios
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    document.getElementById('registerForm').addEventListener('submit', handleRegister);
+    
+    // Event listeners para input de mensaje
+    if (messageInput) {
+        messageInput.addEventListener('input', handleMessageInput);
+        messageInput.addEventListener('keydown', handleKeyDown);
+        messageInput.addEventListener('input', autoResizeTextarea);
+    }
+}
+
+// Manejar login
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    showLoading(true);
+    
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            authToken = data.data.access_token;
+            currentUser = data.data.user;
+            localStorage.setItem('authToken', authToken);
+            
+            showLoading(false);
+            showChatApp();
+            showToast('Inicio de sesión exitoso', 'success');
+        } else {
+            showLoading(false);
+            showToast(data.error || 'Error al iniciar sesión', 'error');
+        }
+    } catch (error) {
+        showLoading(false);
+        showToast('Error de conexión', 'error');
+    }
+}
+
+// Manejar registro
+async function handleRegister(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    showLoading(true);
+    
+    try {
+        const response = await fetch('/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            authToken = data.data.access_token;
+            currentUser = data.data.user;
+            localStorage.setItem('authToken', authToken);
+            
+            showLoading(false);
+            showChatApp();
+            showToast('Registro exitoso', 'success');
+        } else {
+            showLoading(false);
+            showToast(data.error || 'Error al registrarse', 'error');
+        }
+    } catch (error) {
+        showLoading(false);
+        showToast('Error de conexión', 'error');
+    }
+}
