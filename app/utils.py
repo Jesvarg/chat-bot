@@ -30,7 +30,7 @@ def get_gemini_response(user_message):
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
         
         # Crear el modelo (usando gemini-1.5-flash que es más reciente y gratuito)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Generar respuesta
         response = model.generate_content(user_message)
