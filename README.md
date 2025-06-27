@@ -6,7 +6,7 @@ Una aplicación web de chatbot inteligente construida con Flask y Google Gemini 
 
 - **Interfaz moderna y minimalista**: Diseño elegante y responsive.
 - **Autenticación segura**: Sistema de registro/login con JWT
-- **Integración con Google Gemini 1.5 Flash**: Respuestas inteligentes y rápidas de IA
+- **Integración con Google Gemini 2.5 Flash**: Respuestas inteligentes y rápidas de IA
 - **Historial persistente**: Guarda todas las conversaciones en base de datos
 - **Efectos visuales avanzados**: Typing effect, modales de confirmación elegantes
 - **Tiempo real**: Indicadores de escritura y respuestas instantáneas
@@ -19,7 +19,7 @@ Una aplicación web de chatbot inteligente construida con Flask y Google Gemini 
 - **Backend**: Python Flask + SQLAlchemy
 - **Base de Datos**: SQLite (desarrollo) / MySQL (producción)
 - **Autenticación**: Flask-JWT-Extended con tokens seguros
-- **IA**: Google Gemini 1.5 Flash API
+- **IA**: Google Gemini 2.5 Flash API
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla ES6+)
 - **Estilos**: CSS Grid/Flexbox, animaciones CSS, modales personalizados
 - **Efectos**: Typing effect, smooth scrolling, confirmaciones elegantes
@@ -83,8 +83,6 @@ GEMINI_API_KEY=tu_api_key_de_gemini
 ### 6. Inicializar la base de datos
 
 ```bash
-flask db init
-flask db migrate -m "Initial migration"
 flask db upgrade
 ```
 
@@ -112,7 +110,6 @@ La aplicación estará disponible en: `http://localhost:5000`
 - **Indicador de escritura**: Animación de puntos mientras el bot procesa
 - **Contador de caracteres**: Límite visual en el input de mensajes
 - **Responsive design**: Interfaz adaptable a móviles y escritorio
-- **Favicon personalizado**: Icono SVG de robot con chat bubble
 
 ## 📁 Estructura del Proyecto
 
@@ -158,7 +155,7 @@ chat-bot/
 
 **SQLite** - Base de datos por defecto, perfecta para desarrollo y producción pequeña.
 
-**Para MySQL** (si necesitas integrar con Laravel):
+**Para MySQL** (ejemplo: si necesitas integrar con Laravel):
 - Consulta el archivo `mysql_setup.md` para instrucciones detalladas
 - Cambia `DATABASE_URL` en `.env`
 - Ejecuta las migraciones
