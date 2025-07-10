@@ -16,6 +16,7 @@ instance/
 
 # Environments
 .env
+.env.local
 .venv
 env/
 venv/
@@ -65,3 +66,10 @@ secrets.json
 *.backup
 *.bak
 *.sql.gz
+
+# Docker
+.env.local
+data/
+
+# Docker volumes
+mysql_data/

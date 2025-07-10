@@ -1,188 +1,112 @@
 # Chat Bot con IA - Flask & Google Gemini
 
-Una aplicación web de chatbot inteligente construida con Flask y Google Gemini AI, que incluye autenticación JWT, persistencia de historial y una interfaz moderna y elegante.
+Aplicación web de chatbot inteligente con Flask, Google Gemini AI, autenticación JWT y interfaz moderna.
 
 ## 🚀 Características
 
-- **Interfaz moderna y minimalista**: Diseño elegante y responsive.
-- **Autenticación segura**: Sistema de registro/login con JWT
-- **Integración con Google Gemini 1.5 Flash**: Respuestas inteligentes y rápidas de IA
-- **Historial persistente**: Guarda todas las conversaciones en base de datos
-- **Efectos visuales avanzados**: Typing effect, modales de confirmación elegantes
-- **Tiempo real**: Indicadores de escritura y respuestas instantáneas
-- **Responsive**: Funciona perfectamente en móviles y escritorio
-- **API RESTful**: Fácil integración con otras aplicaciones
-- **Soporte multi-base de datos**: SQLite (desarrollo) y MySQL/PostgreSQL (producción)
+- **Interfaz moderna** y responsive
+- **Autenticación JWT** segura
+- **Google Gemini AI** integrado
+- **Historial persistente** en base de datos
+- **API RESTful** completa
+- **Docker** ready
+- **MySQL/SQLite** compatible
 
-## 🛠️ Tecnologías Utilizadas
+## 🛠️ Stack Tecnológico
 
-- **Backend**: Python Flask + SQLAlchemy
-- **Base de Datos**: SQLite (desarrollo) / MySQL (producción)
-- **Autenticación**: Flask-JWT-Extended con tokens seguros
-- **IA**: Google Gemini 1.5 Flash API
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla ES6+)
-- **Estilos**: CSS Grid/Flexbox, animaciones CSS, modales personalizados
-- **Efectos**: Typing effect, smooth scrolling, confirmaciones elegantes
-- **Migración**: Flask-Migrate para control de versiones de BD
-- **Seguridad**: CORS, bcrypt para passwords, JWT tokens
+- **Backend**: Flask, SQLAlchemy, JWT
+- **Frontend**: HTML5, CSS3, JavaScript
+- **Base de Datos**: SQLite / MySQL
+- **IA**: Google Gemini API
+- **Deployment**: Docker, Docker Compose
 
-## 📋 Requisitos Previos
+## 📋 Requisitos
 
-- Python 3.8 o superior
-- API Key de Google Gemini
-- Git (opcional)
+- Python 3.8+
+- Google Gemini API Key
+- Docker (opcional)
 
 ## 🔧 Instalación
 
-### 1. Clonar o descargar el proyecto
-
 ```bash
-git clone <url-del-repositorio>
+# Clonar proyecto
+git clone https://github.com/Jesvarg/chat-bot
 cd chat-bot
-```
 
-### 2. Crear entorno virtual
-
-```bash
+# Entorno virtual
 python -m venv env
-```
+env\Scripts\activate  # Windows
+# source env/bin/activate  # Linux/Mac
 
-### 3. Activar entorno virtual
-
-**Windows:**
-```bash
-env\Scripts\activate
-```
-
-**macOS/Linux:**
-```bash
-source env/bin/activate
-```
-
-### 4. Instalar dependencias
-
-```bash
+# Dependencias
 pip install -r requirements.txt
-```
 
-### 5. Configurar variables de entorno
+# Configurar .env con tu GEMINI_API_KEY
+cp .env.example .env
 
-El archivo `.env` ya está incluido con la configuración básica. Asegúrate de que contenga:
-
-```env
-FLASK_APP=run.py
-FLASK_ENV=development
-SECRET_KEY=tu_secreto_muy_seguro_para_flask_2024
-JWT_SECRET_KEY=otro_secreto_jwt_muy_seguro_2024
-DATABASE_URL=sqlite:///chat.db
-GEMINI_API_KEY=tu_api_key_de_gemini
-```
-
-**Importante**: En producción, cambia las claves secretas por valores seguros.
-
-### 6. Inicializar la base de datos
-
-```bash
-flask db init
-flask db migrate -m "Initial migration"
+# Base de datos
 flask db upgrade
-```
 
-### 7. Ejecutar la aplicación
-
-```bash
+# Ejecutar
 python run.py
 ```
 
-La aplicación estará disponible en: `http://localhost:5000`
+**URL**: `http://localhost:5000`
 
 ## 🎯 Uso
 
-### Registro y Login
-1. Abre `http://localhost:5000` en tu navegador
-2. Crea una cuenta nueva o inicia sesión
-3. Comienza a chatear con el asistente IA
+1. Registrarse o iniciar sesión
+2. Chatear con el asistente IA
+3. Historial automático guardado
 
-### Funcionalidades del Chat
-- **Enviar mensajes**: Escribe y presiona Enter o haz clic en enviar
-- **Historial persistente**: Todas las conversaciones se guardan automáticamente
-- **Efecto de escritura**: El bot "escribe" gradualmente las respuestas (velocidad ajustable)
-- **Modales de confirmación**: Diálogos elegantes para limpiar historial y cerrar sesión
-- **Scroll automático**: Se desplaza suavemente mientras el bot escribe
-- **Indicador de escritura**: Animación de puntos mientras el bot procesa
-- **Contador de caracteres**: Límite visual en el input de mensajes
-- **Responsive design**: Interfaz adaptable a móviles y escritorio
-- **Favicon personalizado**: Icono SVG de robot con chat bubble
+**Funcionalidades**: Typing effect, modales, responsive design, API REST
 
 ## 📁 Estructura del Proyecto
 
 ```
 chat-bot/
-├── app/
-│   ├── __init__.py          # Inicialización de Flask
-│   ├── config.py            # Configuración de la aplicación
-│   ├── models.py            # Modelos de base de datos
-│   ├── schemas.py           # Esquemas de validación
-│   ├── utils.py             # Funciones auxiliares
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   ├── auth.py          # Rutas de autenticación
-│   │   └── chat.py          # Rutas del chat
-│   └── static/
-│       ├── index.html       # Interfaz principal
-│       ├── style.css        # Estilos CSS
-│       └── script.js        # Lógica JavaScript
-├── migrations/              # Migraciones de base de datos
-├── requirements.txt         # Dependencias Python
-├── .env                     # Variables de entorno
-├── run.py                   # Punto de entrada
-└── README.md               # Este archivo
+├── app/                # Módulos de Flask (rutas, modelos, utilidades)
+├── static/             # Archivos estáticos (HTML, CSS, JS)
+├── migrations/         # Migraciones de base de datos
+├── Dockerfile          # Imagen Docker
+├── docker-compose.yml  # Configuración de servicios
+├── run.py              # Punto de entrada de la app
+└── README.md           # Documentación del proyecto
+
+La aplicación sigue una estructura modular en Flask, separando rutas, modelos, utilidades y archivos estáticos para mantener un código limpio y escalable.
 ```
 
 ## 🔌 API Endpoints
 
-### Autenticación
-- `POST /auth/register` - Registrar nuevo usuario
-- `POST /auth/login` - Iniciar sesión
-- `GET /auth/me` - Obtener usuario actual
-- `POST /auth/logout` - Cerrar sesión
-
-### Chat
-- `POST /chat/send` - Enviar mensaje al chatbot
-- `GET /chat/history` - Obtener historial de conversaciones
-- `DELETE /chat/clear` - Limpiar historial
-- `GET /chat/stats` - Estadísticas del chat
-
+**Auth**: `/auth/register`, `/auth/login`, `/auth/me`  
+**Chat**: `/chat/send`, `/chat/history`, `/chat/clear`, `/chat/stats`
 
 ## 🗄️ Base de Datos
 
-**SQLite** - Base de datos por defecto, perfecta para desarrollo y producción pequeña.
+**SQLite** (desarrollo) / **MySQL** (producción)  
+Migraciones con Flask-Migrate
 
-**Para MySQL** (si necesitas integrar con Laravel):
-- Consulta el archivo `mysql_setup.md` para instrucciones detalladas
-- Cambia `DATABASE_URL` en `.env`
-- Ejecuta las migraciones
+## 🐳 Docker
 
-## 🚀 Despliegue
+🔧 ¿Prefieres Docker?
 
-### Para producción:
-1. Cambia las claves secretas en `.env`
-2. Usa MySQL si necesitas integrar con Laravel
-3. Instala Gunicorn: `pip install gunicorn`
-4. Ejecuta: `gunicorn -w 4 -b 0.0.0.0:5000 run:app`
+Consulta la guía detallada en [`README-Docker.md`](./README-Docker.md)
 
-## 🛠️ Personalización
 
-- **Modelo IA**: Cambia el modelo en `app/utils.py`
-- **Estilos**: Edita `app/static/style.css`
-- **Funcionalidades**: Agrega rutas en `app/routes/`
+```bash
+# Construir y ejecutar
+docker build -t chat-bot .
+docker run -d -p 5000:5000 -e GEMINI_API_KEY=tu_key chat-bot
+```
 
-## 🐛 Problemas Comunes
+**Docker Compose**: Ver `docker-compose.yml` para MySQL + Nginx
 
-**Error de API Key**: Verifica tu clave de Gemini en `.env`
+## 🚀 Deployment
 
-**Error de BD**: Ejecuta `flask db upgrade`
+**Manual**: Gunicorn + MySQL  
+**Docker**: Dockerfile + Docker Compose  
+**Producción**: Nginx + Gunicorn + SSL ready
 
 ---
 
-**Proyecto educativo** - Flask, SQLAlchemy, JWT y Google Gemini AI
+**Stack**: Flask + SQLAlchemy + JWT + Google Gemini AI + Docker

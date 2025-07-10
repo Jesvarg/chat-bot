@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Aplicación Flask
+  chat-bot:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env.local
+    environment:
+      - FLASK_ENV
+      - SECRET_KEY
+      - JWT_SECRET_KEY
+      - DATABASE_URL
+      - GEMINI_API_KEY
+    volumes:
+      # Persistir base de datos SQLite
+      - ./data:/app/instance
+    restart: unless-stopped
+    networks:
+      - chat-network
+
+  # MySQL (descomenta para usar en lugar de SQLite)
+  # mysql:
+  #   image: mysql:8.0
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: rootpassword
+  #     MYSQL_DATABASE: chatbot
+  #     MYSQL_USER: chatuser
+  #     MYSQL_PASSWORD: chatpassword
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   restart: unless-stopped
+  #   networks:
+  #     - chat-network
+
+  # Nginx (opcional para producción)
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - chat-bot
+  #   restart: unless-stopped
+  #   networks:
+  #     - chat-network
+
+volumes:
+  # mysql_data:  # Descomenta si usas MySQL
+
+networks:
+  chat-network:
+    driver: bridge
