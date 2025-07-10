@@ -30,6 +30,7 @@ Thumbs.db
 logs
 
 # Database (se creará en el contenedor)
+instance/app.db
 *.db
 *.sqlite
 *.sqlite3
