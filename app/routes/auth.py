@@ -31,8 +31,8 @@ def register():
         db.session.add(user)
         db.session.commit()
         
-        # Crear token JWT
-        access_token = create_access_token(identity=user.id)
+        # Crear token JWT - CONVERTIR A STRING
+        access_token = create_access_token(identity=str(user.id))
         
         return format_success_response({
             'user': user.to_dict(),
@@ -61,8 +61,8 @@ def login():
     if not user or not user.check_password(data['password']):
         return format_error_response('Credenciales inválidas', 401)
     
-    # Crear token JWT
-    access_token = create_access_token(identity=user.id)
+    # Crear token JWT - CONVERTIR A STRING
+    access_token = create_access_token(identity=str(user.id))
     
     return format_success_response({
         'user': user.to_dict(),
@@ -73,13 +73,23 @@ def login():
 @jwt_required()
 def get_current_user():
     """Obtener información del usuario actual"""
-    current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id)
-    
-    if not user:
-        return format_error_response('Usuario no encontrado', 404)
-    
-    return format_success_response(user.to_dict())
+    try:
+        current_user_id = get_jwt_identity()
+        
+        if not current_user_id:
+            return format_error_response('Token inválido', 401)
+        
+        # Convertir a int ya que ahora viene como string
+        user = User.query.get(int(current_user_id))
+        
+        if not user:
+            return format_error_response('Usuario no encontrado', 404)
+        
+        return format_success_response(user.to_dict())
+        
+    except Exception as e:
+        current_app.logger.error(f'Error en /auth/me: {str(e)}')
+        return format_error_response('Error al validar token', 401)
 
 @auth_bp.route('/logout', methods=['POST'])
 @jwt_required()
