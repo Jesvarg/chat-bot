@@ -1,4 +1,4 @@
-# Chat Bot con IA - Flask & Google Gemini
+# Chatbot con IA - Flask & Google Gemini
 
 Aplicación web de chatbot inteligente con Flask, Google Gemini AI, autenticación JWT e interfaz moderna.
 
