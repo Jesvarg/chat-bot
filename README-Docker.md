@@ -1,6 +1,6 @@
-# 🐳 Docker - Chat Bot
+# 🐳 Docker - Chatbot
 
-## ✨ Highlights
+## Resumen
 - Integración con **Google Gemini AI**
 - Autenticación **JWT** segura
 - Despliegue rápido con **Docker** y **Docker Compose**
@@ -8,7 +8,7 @@
 - Preparado para producción con **Nginx + Gunicorn**
 - Código limpio y profesional
 
-## 🚀 Inicio Rápido
+## Inicio Rápido
 
 ```bash
 # Construir y ejecutar
@@ -22,7 +22,7 @@ docker run -d -p 5000:5000 \
   chat-bot
 ```
 
-## 🔧 Comandos Útiles
+## Comandos Útiles
 
 ```bash
 docker logs chat-bot        # Ver logs
@@ -30,7 +30,7 @@ docker stop chat-bot        # Detener
 docker restart chat-bot     # Reiniciar
 ```
 
-## 🗄️ Base de Datos
+## Base de Datos
 
 **SQLite** (por defecto, desarrollo)  
 **MySQL** (producción, con `docker-compose.yml`)
@@ -43,7 +43,7 @@ docker-compose up -d
 docker-compose exec chat-bot flask db upgrade
 ```
 
-## 🛠️ Desarrollo
+## Desarrollo
 
 ```bash
 # Hot-reload para desarrollo
@@ -51,7 +51,7 @@ docker-compose exec chat-bot flask db upgrade
 docker-compose -f docker-compose.dev.yml up
 ```
 
-## 🚀 Producción
+## Producción
 
 **Recomendado:** Usar **Nginx + Gunicorn** para servir Flask en producción.
 
@@ -77,7 +77,7 @@ docker-compose up -d
 >     }
 > }
 
-## 🔧 Docker Compose
+## Docker Compose
 
 **Multi-servicio:** MySQL + Nginx + Flask
 
