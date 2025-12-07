@@ -2,7 +2,7 @@
 
 Aplicación web de chatbot inteligente con Flask, Google Gemini AI, autenticación JWT e interfaz moderna.
 
-## 🚀 Características
+## Características
 
 - **Interfaz moderna** y responsive
 - **Autenticación JWT** segura
@@ -12,20 +12,20 @@ Aplicación web de chatbot inteligente con Flask, Google Gemini AI, autenticaci�
 - **Docker** ready
 - **MySQL/SQLite** compatible
 
-## 🏗️ Stack
+## Stack
 
 **Backend**: Flask + SQLAlchemy + JWT + Google Gemini AI  
 **Frontend**: HTML5 + CSS3 + JavaScript  
 **Database**: SQLite/MySQL + Flask-Migrate
 **Deploy**: Docker + Docker Compose + Nginx
 
-## 📋 Requisitos
+## Requisitos
 
 - Python 3.8+
 - Google Gemini API Key
 - Docker (opcional)
 
-## 🔧 Instalación
+## Instalación
 
 ```bash
 # Clonar proyecto
@@ -53,13 +53,13 @@ python run.py
 
 **URL**: `http://localhost:5000`
 
-## 🎯 Uso
+## Uso
 
 1. Registrarse o iniciar sesión
 2. Chatear con el asistente IA
 3. Historial automático guardado
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 chat-bot/
@@ -77,7 +77,7 @@ chat-bot/
 
 > La aplicación sigue una **estructura modular** en Flask, separando rutas, modelos, utilidades y archivos estáticos para mantener un código limpio y escalable.
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Autenticación
 - `POST /auth/register` - Registrar usuario
@@ -96,7 +96,7 @@ chat-bot/
 - **MySQL** (producción)
 - **Migraciones** con Flask-Migrate
 
-## 🐳 Docker
+## Docker
 
 **Instalación con Docker**
 
@@ -110,7 +110,7 @@ docker run -d -p 5000:5000 -e GEMINI_API_KEY=tu_key chat-bot
 
 **Docker Compose**: Ver `docker-compose.yml` para MySQL + Nginx + Gunicorn
 
-## 🚀 Despliegue
+## Despliegue
 
 ### Opciones de Despliegue
 - **Manual**: Gunicorn + MySQL
