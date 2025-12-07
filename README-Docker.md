@@ -1,4 +1,4 @@
-# 🐳 Docker - Chatbot
+# Docker - Chatbot
 
 ## Resumen
 - Integración con **Google Gemini AI**
